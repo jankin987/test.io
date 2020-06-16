@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="SiamAttn"><meta name="keywords" content="Siamese network,Attention"><meta name="author" content="Soarkey"><meta name="copyright" content="Soarkey"><title>SiamAttn | Soarkey's Blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script><meta name="generator" content="Hexo 4.2.1"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#deformable-siamese-attention-networks-for-visual-object-trackingsiamattn"><span class="toc-text"> Deformable Siamese Attention Networks for Visual Object Tracking【SiamAttn】</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-introduction"><span class="toc-text"> 1. Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-细节"><span class="toc-text"> 2. 细节</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://avatars3.githubusercontent.com/u/17349395?s=400&amp;u=b4d8f5e790e0fab115d7237ee3404f24813e115b&amp;v=4"></div><div class="author-info__name text-center">Soarkey</div><div class="author-info__description text-center">Soarkey's Blog</div><div class="follow-button"><a href="https://github.com/Soarkey">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">7</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">9</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">8</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://github.com/Soarkey">github</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://i.loli.net/2019/12/20/kXR6KLoOcwDsUQy.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Soarkey's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a></span></div><div id="post-info"><div id="post-title">SiamAttn</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-06-08</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Siamese-network/">Siamese network</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Siamese-network/Attention/">Attention</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">317</span><span class="post-meta__separator">|</span><span>Reading time: 1 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="deformable-siamese-attention-networks-for-visual-object-trackingsiamattn"><a class="markdownIt-Anchor" href="#deformable-siamese-attention-networks-for-visual-object-trackingsiamattn"></a> Deformable Siamese Attention Networks for Visual Object Tracking【SiamAttn】</h1>
+<blockquote>
+<p><img src="/2020/06/08/siamattn/image-20200606150148134.png" alt="image-20200606150148134"></p>
+<p>📄 paper: <a href="https://arxiv.org/pdf/2004.06711v1.pdf">https://arxiv.org/pdf/2004.06711v1.pdf</a></p>
+<p>🏙码隆科技: <a href="https://www.malong.com/cn/research.html">https://www.malong.com/cn/research.html</a></p>
+<p>CVPR 2020</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="1-introduction"><a class="markdownIt-Anchor" href="#1-introduction"></a> 1. Introduction</h1>
+<p><strong>Siamese系列问题：</strong></p>
+<ul>
+<li>
+<p>没有在线更新；</p>
+</li>
+<li>
+<p>模板分支和搜索分支完全独立，一些<strong>背景信息</strong>无法得到有效利用。</p>
+</li>
+</ul>
+<p><strong>注意力机制的应用：</strong></p>
+<ol>
+<li>
+<p><strong>RASNet：</strong></p>
+<p><img src="/2020/06/08/siamattn/image-20200608093015025.png" alt="image-20200608093015025"></p>
+<p>三种注意力：</p>
+<ul>
+<li>残差注意力块、通道注意力块和通用注意力块</li>
+</ul>
+<p><img src="/2020/06/08/siamattn/image-20200608091816705.png" alt="image-20200608091816705"></p>
+<p>创新：</p>
+<ul>
+<li>多个注意力机制使得网络不需要进行在线更新操作，其实是将更新操作换做注意力机制来做；</li>
+<li>通过残差注意力机制和通道注意力机制在缓解网络过拟合的同时提升网络的判别能力；</li>
+<li>考虑到视频中的时空信息，并通道注意力机制来获得</li>
+</ul>
+</li>
+<li>
+<p><strong>FlowTrack</strong></p>
+<p><a href="https://blog.csdn.net/qinhuai1994/article/details/80461271">https://blog.csdn.net/qinhuai1994/article/details/80461271</a></p>
+<p><img src="/2020/06/08/siamattn/image-20200608095719104.png" alt="image-20200608095719104"></p>
+<p>网络架构：</p>
+<p><img src="/2020/06/08/siamattn/image-20200608093821599.png" alt="image-20200608093821599"></p>
+<p>创新：</p>
+<ul>
+<li>
+<p>历史帧：光流+CNN特征，用来补全当前帧的特征，增强鲁棒性；</p>
+</li>
+<li>
+<p>空间注意力 Spatial attention</p>
+<p><img src="/2020/06/08/siamattn/image-20200608095046008.png" alt="image-20200608095046008"></p>
+</li>
+<li>
+<p>时序注意力 Temporal attention (channel attention)</p>
+<p><img src="/2020/06/08/siamattn/image-20200608094712370.png" alt="image-20200608094712370"></p>
+</li>
+</ul>
+</li>
+</ol>
+<p>上述两种方法应用注意力机制的缺点：</p>
+<ul>
+<li>模板分支和搜索分支独立计算注意力</li>
+</ul>
+<h1 id="2-细节"><a class="markdownIt-Anchor" href="#2-细节"></a> 2. 细节</h1>
+<p>从Dual attention network for scene segmentation受启发：</p>
+<p><img src="/2020/06/08/siamattn/image-20200608124833163.png" alt="image-20200608124833163"></p>
+<p>三种Attention机制：</p>
+<ul>
+<li>Self-Attention</li>
+<li>Cross-Attention</li>
+<li>Deformable Attention</li>
+</ul>
+<p>网络架构：</p>
+<p><img src="/2020/06/08/siamattn/image-20200608104249744.png" alt="image-20200608104249744"></p>
+<p><img src="/2020/06/08/siamattn/image-20200608104315288.png" alt="image-20200608104315288"></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Soarkey</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://soarkey.github.io/2020/06/08/siamattn/">http://soarkey.github.io/2020/06/08/siamattn/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Siamese-network/">Siamese network</a><a class="post-meta__tags" href="/tags/Attention/">Attention</a></div><div class="social-share pull-right"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="next-post pull-right"><a href="/2020/06/03/siamban/"><span>SiamBAN</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(https://i.loli.net/2019/12/20/kXR6KLoOcwDsUQy.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2020 By Soarkey</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script src="/js/katex.js"></script><script src="/js/search/local-search.js"></script><script id="ribbon" src="/js/third-party/canvas-ribbon.js" size="150" alpha="0.2" zIndex="-1" data-click="true"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
