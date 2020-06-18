@@ -285,7 +285,7 @@ self.addEventListener('fetch', function(event) {
 
 // Runtime cache configuration, using the sw-toolbox library.
 
-toolbox.router.get("/*", toolbox.cacheFirst, {"origin":"https://soarkey.github.io/"});
+toolbox.router.get("/*", toolbox.cacheFirst, {"origin":"soarkey.github.io"});
 
 
 
