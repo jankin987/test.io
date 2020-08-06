@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>CGACD</title>
+      <link href="/2020/08/06/cgacd/"/>
+      <url>/2020/08/06/cgacd/</url>
+      
+        <content type="html"><![CDATA[<h1 id="correlation-guided-attention-for-corner-detection-based-visual-trackingcgacd"><a class="markdownIt-Anchor" href="#correlation-guided-attention-for-corner-detection-based-visual-trackingcgacd"></a> Correlation-Guided Attention for Corner Detection Based Visual Tracking【CGACD】</h1><blockquote><p><img src="/2020/08/06/cgacd/image-20200804152612249.png" alt="image-20200804152612249"></p><p>📄 paper: <a href="https://openaccess.thecvf.com/content_CVPR_2020/papers/Du_Correlation-Guided_Attention_for_Corner_Detection_Based_Visual_Tracking_CVPR_2020_paper.pdf">https://openaccess.thecvf.com/content_CVPR_2020/papers/Du_Correlation-Guided_Attention_for_Corner_Detection_Based_Visual_Tracking_CVPR_2020_paper.pdf</a></p><p>supp: <a href="https://openaccess.thecvf.com/content_CVPR_2020/supplemental/Du_Correlation-Guided_Attention_for_CVPR_2020_supplemental.pdf">https://openaccess.thecvf.com/content_CVPR_2020/supplemental/Du_Correlation-Guided_Attention_for_CVPR_2020_supplemental.pdf</a></p><p>📹 video: <a href="https://www.youtube.com/watch?v=GXsiMpAWr4k">https://www.youtube.com/watch?v=GXsiMpAWr4k</a></p><p>💻 code:  <a href="https://github.com/ohhhyeahhh/SiamCAR">https://github.com/ohhhyeahhh/SiamCAR</a></p><p>🌟  CVPR 2020</p></blockquote><a id="more"></a><h1 id="abstract"><a class="markdownIt-Anchor" href="#abstract"></a> <strong>Abstract</strong></h1><p>​相关性指导的注意力 + corner的anchor-free检测</p><p>（注意力机制 + anchor-free机制）</p><p>​<strong>two-stage method</strong></p><p>​(1). extract RoI by Siamese network</p><p>​(2). pixel-wise correlation-guided spatial attention module</p><p>​<strong>speed:</strong> running at 70FPS</p><h1 id="1-introduction"><a class="markdownIt-Anchor" href="#1-introduction"></a> 1. Introduction</h1><p><strong>Several limitations</strong> on existing Corner detection-based tracking：</p><ul><li>directly detect corners，difficulty distinguishing distractors and target from the crones.</li><li>not effectively explore the relationship between the template and the search image, spatial information about the corners not  explicitly encoded in the correlation results.</li><li>not use powerful networks. (like ResNet)</li></ul><p><strong>Key innovation:</strong></p><ul><li>exploit the relationship between template and RoI.</li><li><strong>pixel-wise correlation</strong> to calculate the similarity between each template feature maps and RoI feature maps. (encode spatial information)</li><li><strong>channel-wise correlation</strong> to calculate the channel-wise similarity maps. (encode importance information of the various channels)</li></ul><h1 id="2-network-architecture"><a class="markdownIt-Anchor" href="#2-network-architecture"></a> 2. Network Architecture</h1><p><img src="/2020/08/06/cgacd/image-20200805110457598.png" alt="image-20200805110457598"></p><ul><li><p>max-pooling and average-pooling gather different  clues about the channel importance.</p></li><li><p>Unlike traditional cross-correlation, pixel-wise correlation separately highlights different parts of the target in different similarity maps.</p></li><li><p>the hourglass-structure network learns spatial attention maps from the pixel-wise similarity maps, which adaptively attend to the top-left and botom-right  corners.</p></li><li><p>Upsample: conv + nearest interpolation</p></li></ul><h1 id="3-experiments"><a class="markdownIt-Anchor" href="#3-experiments"></a> 3. Experiments</h1><h2 id="31-method-analysis"><a class="markdownIt-Anchor" href="#31-method-analysis"></a> 3.1 Method Analysis</h2><ul><li><p><strong>exploitation of relationship</strong></p><p>comparison of different integrating template and search image approaches (PS / AUC on OTB2015 &amp; UAV123)</p><p><img src="/2020/08/06/cgacd/image-20200806112851440.png" alt="image-20200806112851440"></p></li><li><p><strong>structure of attention module</strong></p><p>cross-correlation vs. guide spatial and channel attention.  see⬆️</p></li><li><p><strong>siamese tracking module</strong></p><p>show the effectiveness croner detection module (↑4.0% in PS &amp; ↑4.8% in AUC )</p><p><img src="/2020/08/06/cgacd/image-20200806152944256.png" alt="image-20200806152944256"></p></li><li><p><strong>feature from different layers</strong></p><p>compare performance from different layers of the backbone.</p><p>(conv4 block is best!)</p><p><img src="/2020/08/06/cgacd/image-20200806112938480.png" alt="image-20200806112938480"></p></li><li><p><strong>Impact of RoI augmentation</strong></p><p>(↑0.5% in PS &amp; ↑0.5% in AUC )  see ⬆️</p></li></ul><h2 id="32-sota-comparison"><a class="markdownIt-Anchor" href="#32-sota-comparison"></a> 3.2 SOTA comparison</h2><ul><li><p>VOT2018</p><p><img src="/2020/08/06/cgacd/image-20200806113427292.png" alt="image-20200806113427292"></p></li><li><p>OTB2015</p><p><img src="/2020/08/06/cgacd/image-20200806113442294.png" alt="image-20200806113442294"></p></li><li><p>UAV123</p><p><img src="/2020/08/06/cgacd/image-20200806113506461.png" alt="image-20200806113506461"></p></li><li><p>LaSOT</p><p><img src="/2020/08/06/cgacd/image-20200806113601298.png" alt="image-20200806113601298"></p></li><li><p>TrackingNet</p><p><img src="/2020/08/06/cgacd/image-20200806113622285.png" alt="image-20200806113622285"></p></li></ul><h1 id="4-supplementary-material"><a class="markdownIt-Anchor" href="#4-supplementary-material"></a> 4. Supplementary Material</h1><p><img src="/2020/08/06/cgacd/image-20200806153106384.png" alt="image-20200806153106384"></p><p><img src="/2020/08/06/cgacd/image-20200806153208698.png" alt="image-20200806153208698"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Attention </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Siamese network </tag>
+            
+            <tag> Attention </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>SiamRPN++</title>
       <link href="/2020/07/05/siamrpn/"/>
       <url>/2020/07/05/siamrpn/</url>
