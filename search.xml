@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>DaSiamRPN</title>
+      <link href="/2020/08/23/dasiamrpn/"/>
+      <url>/2020/08/23/dasiamrpn/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p><img src="/2020/08/23/dasiamrpn/image-20200821100427336.png" alt="author"></p><p>📄 paper: <a href="https://arxiv.org/pdf/1808.06048.pdf">https://arxiv.org/pdf/1808.06048.pdf</a></p><p>💻 code: <a href="https://github.com/foolwood/DaSiamRPN">https://github.com/foolwood/DaSiamRPN</a></p><p>🎓 slide: <a href="https://drive.google.com/open?id=1dsEI2uYHDfELK0CW2xgv7R4QdCs6lwfr">https://drive.google.com/open?id=1dsEI2uYHDfELK0CW2xgv7R4QdCs6lwfr</a></p><p>🌟  ECCV 2018</p></blockquote><a id="more"></a><h1 id="abstract"><a class="markdownIt-Anchor" href="#abstract"></a> Abstract</h1><ul><li><p>the imbalanced distribution of training data makes the learned features less discriminative.</p><p>–&gt; off-line + effective sampling strategy</p></li><li><p>novel distractor-aware module<br>effectively transfer the general embedding to the current video domain.</p></li><li><p>local-to-global search region strategy</p></li></ul><h1 id="1-introduction"><a class="markdownIt-Anchor" href="#1-introduction"></a> 1. Introduction</h1><p><strong>Problems:</strong></p><ol><li><p>The semantic backgrounds are always considered as distractors, and the performance can not be guaranteed when the backgrounds are cluttered. (语义背景信息(即干扰物)没有得到充分探索)</p></li><li><p>these methods lose the ability to update the appearance model online which is often critical to account for drastic appearance changes in tracking scenarios. (缺少更新策略)</p></li><li><p>local search strategy, which can not handle the full occlusion and out-of-view challenges. (只有局部搜索)</p></li></ol><p><img src="/2020/08/23/dasiamrpn/image-20200821142908246.png" alt="DaSiamRPN"></p><h1 id="2-distractor-aware-siamese-networks"><a class="markdownIt-Anchor" href="#2-distractor-aware-siamese-networks"></a> 2. Distractor-aware Siamese Networks</h1><ol><li><p>Diverse categories of positive pairs can promote the generalization ability. (+VID / COCO datasets)</p></li><li><p>Semantic negative pairs can improve the discriminative ability.<br>two imbalance:</p><ul><li>rare semantic negative pairs</li><li>intraclass distractors</li></ul></li><li><p>Customizing effective data augmentation for visual tracking.<br>(translation, scale variations and illumination changes + motion blur)</p></li></ol><p><img src="/2020/08/23/dasiamrpn/image-20200821162640860.png" alt="DaSiamRPN"></p><p><img src="/2020/08/23/dasiamrpn/image-20200821165335163.png" alt="DaSiamRPN"></p><h1 id="3-training"><a class="markdownIt-Anchor" href="#3-training"></a> 3. Training</h1><p><img src="/2020/08/23/dasiamrpn/image-20200822161600553.png" alt="formula"></p><p><img src="/2020/08/23/dasiamrpn/image-20200823095656719.png" alt="示意图"></p><p><img src="/2020/08/23/dasiamrpn/image-20200823100129899.png" alt="formula"></p><p><img src="/2020/08/23/dasiamrpn/image-20200823100156263.png" alt="formula"></p><h1 id="4-dasiamrpn-for-long-term-tracking"><a class="markdownIt-Anchor" href="#4-dasiamrpn-for-long-term-tracking"></a> 4. DaSiamRPN for Long-term Tracking</h1><p><strong>Extra challenges:</strong> out-of-view and full occlusion</p><p><strong>Method:</strong> the local-to-global search region</p><p><img src="/2020/08/23/dasiamrpn/image-20200823100433922.png" alt="long-term tracking"></p><h1 id="5-experiments"><a class="markdownIt-Anchor" href="#5-experiments"></a> 5. Experiments</h1><p><img src="/2020/08/23/dasiamrpn/image-20200823101316984.png" alt="experiments"></p><p><img src="/2020/08/23/dasiamrpn/image-20200823101417399.png" alt="experiments"></p><p><img src="/2020/08/23/dasiamrpn/image-20200823101443208.png" alt="experiments"></p><p><img src="/2020/08/23/dasiamrpn/image-20200823101459650.png" alt="experiments"></p><p><strong>Ablation Study:</strong></p><p><img src="/2020/08/23/dasiamrpn/image-20200823101534194.png" alt="ablation study"></p><h1 id="6-reference"><a class="markdownIt-Anchor" href="#6-reference"></a> 6. Reference</h1><ul><li>ECCV视觉目标跟踪之DaSiamRPN <a href="https://zhuanlan.zhihu.com/p/42546692">https://zhuanlan.zhihu.com/p/42546692</a></li><li>DASiamRPN阅读笔记 <a href="https://blog.csdn.net/fzp95/article/details/82380261">https://blog.csdn.net/fzp95/article/details/82380261</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Siamese network </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Siamese network </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>TADT</title>
       <link href="/2020/08/15/tadt/"/>
       <url>/2020/08/15/tadt/</url>
