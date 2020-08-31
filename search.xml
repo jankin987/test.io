@@ -335,9 +335,9 @@
       
         <tags>
             
-            <tag> IoU-Net </tag>
-            
             <tag> Siamese network </tag>
+            
+            <tag> IoU-Net </tag>
             
         </tags>
       
