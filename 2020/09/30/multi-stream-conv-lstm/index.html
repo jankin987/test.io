@@ -1,0 +1,102 @@
+<!-- - var pageTitle = page.title || config.subtitle || ''--><!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="multi-stream conv-LSTM"><meta name="keywords" content="Siamese network,LSTM,Trajectory prediction,motion prediction"><meta name="author" content="Soarkey,soarkey@foxmail.com"><meta name="copyright" content="Soarkey"><title>multi-stream conv-LSTM | Soarkey's Blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script><meta name="generator" content="Hexo 4.2.1"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#abstract"><span class="toc-text"> Abstract</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-related-work"><span class="toc-text"> 1. Related work</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-method"><span class="toc-text"> 2. Method</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://avatars3.githubusercontent.com/u/17349395?s=400&amp;u=b4d8f5e790e0fab115d7237ee3404f24813e115b&amp;v=4"></div><div class="author-info__name text-center">Soarkey</div><div class="author-info__description text-center">Soarkey's Blog</div><div class="follow-button"><a href="https://github.com/Soarkey">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">19</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">17</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">13</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://github.com/Soarkey">github</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://github.com/Soarkey/soarkey.github.io/blob/master/img/bg.png?raw=true)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Soarkey's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a><a class="site-page" href="/about">About</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a></span></div><div id="post-info"><div id="post-title">multi-stream conv-LSTM</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-09-30</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Siamese-network/">Siamese network</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">446</span><span class="post-meta__separator">|</span><span>Reading time: 2 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><blockquote>
+<p><img src="/2020/09/30/multi-stream-conv-lstm/image-20200925184307876.png" alt="image-20200925184307876"></p>
+<p>📄 paper: <a href="https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123670001.pdf">https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123670001.pdf</a></p>
+<p>💻 no code</p>
+<p>🌟 ECCV 2020</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="abstract"><a class="markdownIt-Anchor" href="#abstract"></a> Abstract</h1>
+<p>预测目标的未来位置，3个关键点：</p>
+<ul>
+<li>object motion trajectory is affected significantly by camera motion;</li>
+<li>the past trajectory of an object can act as a salient cue to estimate the object motion in the spatial domain;</li>
+<li>previous frames contain the surroundings and appearance of the target object, which is useful for predicting the target object’s future locations.</li>
+</ul>
+<p>​	By combining <strong>the heatmap scores</strong> from our tracker (DiMP/ that utilises appearance inference) and <strong>the locations of the target object</strong> from our trajectory inference, we predict the final target’s location in each frame.</p>
+<p>现有tracking方法存在的问题：不能很好地处理遮挡和区分多个外观相似的物体。</p>
+<p>由3个子网络组成：</p>
+<p><mark>appearance-based</mark> tracking network (tracker) +  <mark>background-motion</mark> prediction network + <mark>trajectory</mark> prediction network</p>
+<h1 id="1-related-work"><a class="markdownIt-Anchor" href="#1-related-work"></a> 1. Related work</h1>
+<p><strong>future trajectory prediction:</strong></p>
+<ol>
+<li>
+<p>human social interactions and behaviours in crowd scene</p>
+</li>
+<li>
+<p>decision-making process</p>
+</li>
+<li>
+<p>rich features about human behavioural information + interaction with their surrounding</p>
+</li>
+<li>
+<p>Scene-LSTM, divide static scene to Manhattan grid</p>
+</li>
+<li>
+<p>SoPhie, deep-net features  &lt;-(from)- scene semantic segmentation model</p>
+<p>​                  + GAN -(to)-&gt; attention –&gt; model person trajectory （用GAN的方式训练）</p>
+</li>
+</ol>
+<p><strong>motion prediction:</strong></p>
+<ol>
+<li>
+<p>RNN + 时间窗口联合推理多条线索  –&gt; 用于计算similarity score</p>
+</li>
+<li>
+<p>Gaussian process regression model –&gt; pedestrian motion</p>
+</li>
+<li>
+<p>statistically based model<br>
+（以上三种方法都假定static camera，另一些方法consider motion as camera motion + object motion）</p>
+</li>
+<li>
+<p>camera ego-motion scales + speed of target person + person pose –&gt; predict person’s location</p>
+<p>以上方法都使用了目标背景信息(surroundings)，对单目标追踪泛化性能不好，</p>
+<p>本文只使用past trajectory + target visual features –&gt; predict short-term future locations</p>
+</li>
+</ol>
+<h1 id="2-method"><a class="markdownIt-Anchor" href="#2-method"></a> 2. Method</h1>
+<p>组成的三个部分：</p>
+<p><img src="/2020/09/30/multi-stream-conv-lstm/image-20200928133629617.png" alt="image-20200928133629617"></p>
+<p><strong>Tracker：</strong></p>
+<p>​	本文采用DiMP作为基准</p>
+<p><strong>trajectory prediction network：</strong></p>
+<p>​	采用LSTM结构</p>
+<p><img src="/2020/09/30/multi-stream-conv-lstm/image-20200928133716948.png" alt="image-20200928133716948"></p>
+<p><strong>background motion prediction network：</strong></p>
+<p>​	&gt; 用Siamese网络比较background与相邻帧==【local movement】==</p>
+<ul>
+<li>最高响应值点的位移</li>
+<li>多尺度图片中得到旋转角度<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">r_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和尺度变换<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>c</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">c_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></li>
+</ul>
+<p><img src="/2020/09/30/multi-stream-conv-lstm/image-20200928133742745.png" alt="image-20200928133742745"></p>
+<p>​	&gt; each frame with <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">[</mo><msub><mi>t</mi><mn>0</mn></msub><mo>−</mo><msub><mi>t</mi><mrow><mi>p</mi><mi>r</mi><mi>e</mi><mi>v</mi></mrow></msub><mo separator="true">,</mo><msub><mi>t</mi><mn>0</mn></msub><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[t_0-t_{prev}, t_0-1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">v</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span>   <mark>【global movement】</mark></p>
+<ul>
+<li>
+<p>time-varying background motion pattern （随时间变化的运动模式）</p>
+<p><img src="/2020/09/30/multi-stream-conv-lstm/image-20200928140322129.png" alt="image-20200928140322129"></p>
+</li>
+</ul>
+<p><img src="/2020/09/30/multi-stream-conv-lstm/image-20200928140503170.png" alt="image-20200928140503170"></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:soarkey@foxmail.com">Soarkey</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://soarkey.github.io/2020/09/30/multi-stream-conv-lstm/">http://soarkey.github.io/2020/09/30/multi-stream-conv-lstm/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Siamese-network/">Siamese network</a><a class="post-meta__tags" href="/tags/LSTM/">LSTM</a><a class="post-meta__tags" href="/tags/Trajectory-prediction/">Trajectory prediction</a><a class="post-meta__tags" href="/tags/motion-prediction/">motion prediction</a></div><div class="social-share pull-right"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/09/30/multi-stream-conv-lstm/"><i class="fa fa-chevron-left">  </i><span>multi-stream_conv-LSTM</span></a></div><div class="next-post pull-right"><a href="/2020/08/30/siamfc/"><span>SiamFC++</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'c1c26b093ab018134968',
+  clientSecret: 'b85a3a9d5e48dfc88343b4f40fced48e46e522e0',
+  repo: 'soarkey.github.io',
+  owner: 'Soarkey',
+  admin: 'Soarkey',
+  id: md5(decodeURI(location.pathname)),
+  language: 'en'
+})
+gitalk.render('gitalk-container')</script></div></div><footer class="footer-bg" style="background-image: url(https://github.com/Soarkey/soarkey.github.io/blob/master/img/bg.png?raw=true)"><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2020 By Soarkey</div><div class="framework-info"><span>Driven - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script src="/js/katex.js"></script><script src="/js/search/local-search.js"></script><script id="ribbon" src="/js/third-party/canvas-ribbon.js" size="150" alpha="0.2" zIndex="-1" data-click="true"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
