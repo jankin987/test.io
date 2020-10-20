@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title>fast-vos-dttm-tan</title>
+      <title>Fast-VOS-DTTM-TAN</title>
       <link href="/2020/10/12/fast-vos-dttm-tan/"/>
       <url>/2020/10/12/fast-vos-dttm-tan/</url>
       
@@ -360,9 +360,9 @@
             
             <tag> Siamese network </tag>
             
-            <tag> Meta-Learning </tag>
-            
             <tag> LSTM </tag>
+            
+            <tag> Meta-Learning </tag>
             
             <tag> Meta-Updater </tag>
             
